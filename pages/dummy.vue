@@ -39,46 +39,46 @@
           {{ view.name }}
         </option>
         <!-- <option name="view" id="satellite-v9" v-bind:value="satellite-v9" selected>
-          <label>satellite</label>
-        </option>
-        <option name="view" id="light-v10" value="light-v10">
-          <label>light</label>
-        </option>
-        <option name="view" id="dark-v10" value="dark-v10">
-          <label>Dark</label>
-        </option>
-        <option name="view" id="streets-v11" value="streets-v11">
-          <label>Streets</label>
-        </option>
-        <option name="view" id="outdoors-v11" value="outdoors-v11">
-          <label>Outdoors</label>
-        </option> -->
+            <label>satellite</label>
+          </option>
+          <option name="view" id="light-v10" value="light-v10">
+            <label>light</label>
+          </option>
+          <option name="view" id="dark-v10" value="dark-v10">
+            <label>Dark</label>
+          </option>
+          <option name="view" id="streets-v11" value="streets-v11">
+            <label>Streets</label>
+          </option>
+          <option name="view" id="outdoors-v11" value="outdoors-v11">
+            <label>Outdoors</label>
+          </option> -->
       </select>
       <!-- <input
-        type="text"
-        class="mapboxgl-ctrl-geocoder--input zIndex1"
-        placeholder="Search for places in Berkeley"
-        aria-label="Search for places"
-      /> -->
+          type="text"
+          class="mapboxgl-ctrl-geocoder--input zIndex1"
+          placeholder="Search for places in Berkeley"
+          aria-label="Search for places"
+        /> -->
 
       <!-- <input
-        type="search"
-        class="zIndex1"
-        name="search"
-        v-model="data.findString"
-        placeholder="Search Location"
-        @keyup="getSpecificMapData(data.findString)"
-      /> -->
+          type="search"
+          class="zIndex1"
+          name="search"
+          v-model="data.findString"
+          placeholder="Search Location"
+          @keyup="getSpecificMapData(data.findString)"
+        /> -->
       <!-- <div class="zIndex2">
-        <input type="file" @change="uploadCsvFile" />
-        <button>Submit</button>
-      </div> -->
+          <input type="file" @change="uploadCsvFile" />
+          <button>Submit</button>
+        </div> -->
     </v-map>
     <!-- Polygon draw calculate start -->
-    <!-- <div class="calculation-box">
+    <div class="calculation-box">
       <p>Click the map to draw a polygon.</p>
       <div id="calculated-area"></div>
-    </div> -->
+    </div>
     <!-- polygon ends -->
   </main>
 </template>
@@ -234,8 +234,6 @@ async function getMapData(map: mapboxgl.Map) {
 
   console.log("MapData - ", data.mapData[0]);
 
-  //   Geo Coder search start
-
   // Add the control to the map.
   map.addControl(
     new MapboxGeocoder({
@@ -244,7 +242,7 @@ async function getMapData(map: mapboxgl.Map) {
       mapboxgl: mapboxgl,
     })
   );
-  // Geo Coder search Ends
+  // Geo Co
 
   // // Circle try
   //   map.on("load", () => {
@@ -289,49 +287,41 @@ async function getMapData(map: mapboxgl.Map) {
   styleView(map);
 
   //   //   Polygon Starts
-  let pointsData = [];
-  data.allMapDataPoints.map((ele) => {
-    let arrFormat = [ele.lat, ele.lon];
-    pointsData.push(arrFormat);
-  });
-  console.log("coordinates", pointsData);
-
-  map.addSource("MyPolygon", {
-    type: "geojson",
-    data: {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "Polygon",
-            coordinates: [
-              pointsData,
-              //   [
-              //     [73.70703125, 18.96818922264095],
-              //     [72.771484375, 16.46818922264095],
-              //     [72.771484375, 19.5271348225978],
-              //     [-73.70703125, 16.5271348225978],
-              //     // [74.04931277036667, 19.266912177018096],
-              //     [74.70703125, 20.46818922264095],
-              //   ],
-            ],
-          },
-        },
-      ],
-    },
-  });
-  map.addLayer({
-    id: "MyPolygon",
-    type: "fill",
-    source: "MyPolygon", // reference the data source
-    layout: {},
-    paint: {
-      "fill-color": "#0080FF", // blue color fill
-      "fill-opacity": 0.5,
-    },
-  });
+  //   map.addSource("MyPolygon", {
+  //     type: "geojson",
+  //     data: {
+  //       type: "FeatureCollection",
+  //       features: [
+  //         {
+  //           type: "Feature",
+  //           properties: {},
+  //           geometry: {
+  //             type: "Polygon",
+  //             coordinates: [
+  //               [
+  //                 [74.70703125, 20.46818922264095],
+  //                 [80.771484375, 20.46818922264095],
+  //                 [80.771484375, 24.5271348225978],
+  //                 [74.70703125, 24.5271348225978],
+  //                 [74.04931277036667, 19.266912177018096],
+  //                 [74.70703125, 20.46818922264095],
+  //               ],
+  //             ],
+  //           },
+  //         },
+  //       ],
+  //     },
+  //   });
+  //   map.addLayer({
+  //     id: "MyPolygon",
+  //     type: "fill",
+  //     source: "MyPolygon", // reference the data source
+  //     layout: {},
+  //     paint: {
+  //       "fill-color": "#0080FF", // blue color fill
+  //       "fill-opacity": 0.5,
+  //     },
+  //   });
   //   // Polygon Ends
 }
 
@@ -384,7 +374,7 @@ async function mapMarker(map: mapboxgl.Map) {
   //       mapboxgl: mapboxgl,
   //     })
   //   );
-  //   // Geo Coder search Ends
+  //   // Geo Coder Ends
 
   // Geo Polygon end
 
@@ -593,7 +583,7 @@ async function getSpecificMapData(find) {
 // }
 </script>
 <!-- <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->
 
 <style>
 html,

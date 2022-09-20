@@ -39,40 +39,40 @@
           {{ view.name }}
         </option>
         <!-- <option name="view" id="satellite-v9" v-bind:value="satellite-v9" selected>
-          <label>satellite</label>
-        </option>
-        <option name="view" id="light-v10" value="light-v10">
-          <label>light</label>
-        </option>
-        <option name="view" id="dark-v10" value="dark-v10">
-          <label>Dark</label>
-        </option>
-        <option name="view" id="streets-v11" value="streets-v11">
-          <label>Streets</label>
-        </option>
-        <option name="view" id="outdoors-v11" value="outdoors-v11">
-          <label>Outdoors</label>
-        </option> -->
+            <label>satellite</label>
+          </option>
+          <option name="view" id="light-v10" value="light-v10">
+            <label>light</label>
+          </option>
+          <option name="view" id="dark-v10" value="dark-v10">
+            <label>Dark</label>
+          </option>
+          <option name="view" id="streets-v11" value="streets-v11">
+            <label>Streets</label>
+          </option>
+          <option name="view" id="outdoors-v11" value="outdoors-v11">
+            <label>Outdoors</label>
+          </option> -->
       </select>
       <!-- <input
-        type="text"
-        class="mapboxgl-ctrl-geocoder--input zIndex1"
-        placeholder="Search for places in Berkeley"
-        aria-label="Search for places"
-      /> -->
+          type="text"
+          class="mapboxgl-ctrl-geocoder--input zIndex1"
+          placeholder="Search for places in Berkeley"
+          aria-label="Search for places"
+        /> -->
 
       <!-- <input
-        type="search"
-        class="zIndex1"
-        name="search"
-        v-model="data.findString"
-        placeholder="Search Location"
-        @keyup="getSpecificMapData(data.findString)"
-      /> -->
+          type="search"
+          class="zIndex1"
+          name="search"
+          v-model="data.findString"
+          placeholder="Search Location"
+          @keyup="getSpecificMapData(data.findString)"
+        /> -->
       <!-- <div class="zIndex2">
-        <input type="file" @change="uploadCsvFile" />
-        <button>Submit</button>
-      </div> -->
+          <input type="file" @change="uploadCsvFile" />
+          <button>Submit</button>
+        </div> -->
     </v-map>
     <!-- Polygon draw calculate start -->
     <!-- <div class="calculation-box">
@@ -244,7 +244,7 @@ async function getMapData(map: mapboxgl.Map) {
       mapboxgl: mapboxgl,
     })
   );
-  // Geo Coder search Ends
+  // Geo Coder search end
 
   // // Circle try
   //   map.on("load", () => {
@@ -288,7 +288,7 @@ async function getMapData(map: mapboxgl.Map) {
   mapMarker(map);
   styleView(map);
 
-  //   //   Polygon Starts
+  //   Polygon Starts
   let pointsData = [];
   data.allMapDataPoints.map((ele) => {
     let arrFormat = [ele.lat, ele.lon];
@@ -332,7 +332,70 @@ async function getMapData(map: mapboxgl.Map) {
       "fill-opacity": 0.5,
     },
   });
-  //   // Polygon Ends
+  // Polygon Ends
+
+  //   //   polygon 2 start
+  //   map.on("load", () => {
+  //     // Add a data source containing GeoJSON data.
+  //     map.addSource("maine", {
+  //       type: "geojson",
+  //       data: {
+  //         type: "Feature",
+  //         geometry: {
+  //           type: "Polygon",
+  //           // These coordinates outline Maine.
+  //           coordinates: [
+  //             [
+  //               [-67.13734, 45.13745],
+  //               [-66.96466, 44.8097],
+  //               [-68.03252, 44.3252],
+  //               [-69.06, 43.98],
+  //               [-70.11617, 43.68405],
+  //               [-70.64573, 43.09008],
+  //               [-70.75102, 43.08003],
+  //               [-70.79761, 43.21973],
+  //               [-70.98176, 43.36789],
+  //               [-70.94416, 43.46633],
+  //               [-71.08482, 45.30524],
+  //               [-70.66002, 45.46022],
+  //               [-70.30495, 45.91479],
+  //               [-70.00014, 46.69317],
+  //               [-69.23708, 47.44777],
+  //               [-68.90478, 47.18479],
+  //               [-68.2343, 47.35462],
+  //               [-67.79035, 47.06624],
+  //               [-67.79141, 45.70258],
+  //               [-67.13734, 45.13745],
+  //             ],
+  //           ],
+  //         },
+  //       },
+  //     });
+
+  //     // Add a new layer to visualize the polygon.
+  //     map.addLayer({
+  //       id: "maine",
+  //       type: "fill",
+  //       source: "maine", // reference the data source
+  //       layout: {},
+  //       paint: {
+  //         "fill-color": "#0080ff", // blue color fill
+  //         "fill-opacity": 0.5,
+  //       },
+  //     });
+  //     // Add a black outline around the polygon.
+  //     map.addLayer({
+  //       id: "outline",
+  //       type: "line",
+  //       source: "maine",
+  //       layout: {},
+  //       paint: {
+  //         "line-color": "#000",
+  //         "line-width": 3,
+  //       },
+  //     });
+  //   });
+  //   // polygon 2 end
 }
 
 async function mapMarker(map: mapboxgl.Map) {
@@ -374,7 +437,8 @@ async function mapMarker(map: mapboxgl.Map) {
   //   });
 
   //   [74.04931277036667, 19.266912177018096],
-  //   //   Geo Coder search start
+
+  //   //   Geo Coder start
 
   //   // Add the control to the map.
   //   map.addControl(
@@ -384,7 +448,7 @@ async function mapMarker(map: mapboxgl.Map) {
   //       mapboxgl: mapboxgl,
   //     })
   //   );
-  //   // Geo Coder search Ends
+  //   // Geo Coder Ends
 
   // Geo Polygon end
 
@@ -593,7 +657,7 @@ async function getSpecificMapData(find) {
 // }
 </script>
 <!-- <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->
 
 <style>
 html,
