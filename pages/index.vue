@@ -89,7 +89,7 @@
 import VMap from "v-mapbox";
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import { MapboxDraw } from "@mapbox/mapbox-gl-geocoder";
+// import { MapboxDraw } from "@mapbox/mapbox-gl-geocoder";
 
 // const mapView = reactive({
 //   displayMap: "",
@@ -215,6 +215,7 @@ async function styleView(map: mapboxgl.Map) {
 async function getMapData(map: mapboxgl.Map) {
   console.log("load ", map);
   data.map1 = map;
+
   //   map.setStyle("mapbox://styles/mapbox/dark-v10");
   // http://localhost:3030/map
   //   http://localhost:3040/map
@@ -235,7 +236,6 @@ async function getMapData(map: mapboxgl.Map) {
   console.log("MapData - ", data.mapData[0]);
 
   //   Geo Coder search start
-
   // Add the control to the map.
   map.addControl(
     new MapboxGeocoder({
@@ -333,6 +333,12 @@ async function getMapData(map: mapboxgl.Map) {
     },
   });
   //   // Polygon Ends
+
+  // // Fly the map to the location.
+  // map.flyTo({
+  //   center: [73.70703125, 18.96818922264095],
+  //   speed: 0.5,
+  // });
 }
 
 async function mapMarker(map: mapboxgl.Map) {

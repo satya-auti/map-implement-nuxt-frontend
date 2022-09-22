@@ -17,17 +17,7 @@
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css"
         type="text/css"
       />
-      <!-- Directions css -->
-      <link
-        rel="stylesheet"
-        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
-        type="text/css"
-      />
-      <link
-        href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css"
-        rel="stylesheet"
-      />
-      <!--  -->
+
       <!-- <script src="https://js.sentry-cdn.com/9c5feb5b248b49f79a585804c259febc.min.js" crossorigin="anonymous"></script> -->
     </head>
     <v-map class="w-full h-full" :options="state.map" @loaded="getMapData">
@@ -48,6 +38,21 @@
         >
           {{ view.name }}
         </option>
+        <!-- <option name="view" id="satellite-v9" v-bind:value="satellite-v9" selected>
+            <label>satellite</label>
+          </option>
+          <option name="view" id="light-v10" value="light-v10">
+            <label>light</label>
+          </option>
+          <option name="view" id="dark-v10" value="dark-v10">
+            <label>Dark</label>
+          </option>
+          <option name="view" id="streets-v11" value="streets-v11">
+            <label>Streets</label>
+          </option>
+          <option name="view" id="outdoors-v11" value="outdoors-v11">
+            <label>Outdoors</label>
+          </option> -->
       </select>
       <!-- <input
           type="text"
@@ -64,16 +69,16 @@
           placeholder="Search Location"
           @keyup="getSpecificMapData(data.findString)"
         /> -->
-      <!-- <div class="zIndex2">
-          <input type="file" @change="uploadCsvFile" />
-          <button>Submit</button>
-        </div> -->
+      <div class="zIndex2">
+        <input type="file" @change="uploadCsvFile" />
+        <button>Submit</button>
+      </div>
     </v-map>
     <!-- Polygon draw calculate start -->
-    <div class="calculation-box">
-      <p>Click the map to draw a polygon.</p>
-      <div id="calculated-area"></div>
-    </div>
+    <!-- <div class="calculation-box">
+        <p>Click the map to draw a polygon.</p>
+        <div id="calculated-area"></div>
+      </div> -->
     <!-- polygon ends -->
   </main>
 </template>
@@ -84,7 +89,6 @@
 import VMap from "v-mapbox";
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import MapboxDirections from "@mapbox/mapbox-gl-geocoder";
 // import { MapboxDraw } from "@mapbox/mapbox-gl-geocoder";
 
 // const mapView = reactive({
@@ -154,9 +158,27 @@ async function styleView(map: mapboxgl.Map) {
   //   let setMapStyle = "mapbox://styles/mapbox/" + layerId;
   console.log("map", map);
   //   data.temp1.setStyle("mapbox://styles/mapbox/" + layerId);
-  //   data.map1.setStyle("mapbox://styles/mapbox/" + layerId);
+  data.map1.setStyle("mapbox://styles/mapbox/" + layerId);
+  //   state.map.style = setMapStyle;
 
+  //   const layerList = document.getElementById("styles");
+  //   console.log("layer list ", layerList);
+
+  //   const options: any = layerList.getElementsByTagName("option");
+  //   console.log("options ", options);
+  //   //   options.forEach((a) => console.log("map - > ", a));
+  //   for (const option of options) {
+  //     console.log("in for loop" + option);
+  //     console.log("demo - > ", option.value);
+
+  //     option.onclick = (layer) => {
+  //       console.log("click on select" + layer);
+  //       console.log("id ", layer.value);
+
+  //       const layerId = layer.value;
   //       map.setStyle("mapbox://styles/mapbox/" + layerId);
+  //     };
+  //   }
 }
 
 // function onMapLoaded(map) {
@@ -212,150 +234,16 @@ async function getMapData(map: mapboxgl.Map) {
 
   console.log("MapData - ", data.mapData[0]);
 
-  // Geo Coder search start
-  // Add the control to the map
-  mapboxgl.accessToken = state.map.accessToken;
-  // map.addControl(
-  //   new MapboxGeocoder({
-  //     accessToken: mapboxgl.accessToken,
-  //     //   "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
-  //     mapboxgl: mapboxgl,
-  //   })
-  // );
-
-  //     let geocoder = new MapboxGeocoder({
-  //     accessToken: mapboxgl.accessToken,
-  //     mapboxgl: mapboxgl
-  // });
-  // map.addControl(geocoder);
-
-  // Geo Coder search ends
-
-  //   Directions starts
-  map.addControl(
-    new MapboxDirections({
-      accessToken:
-        "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
-    }),
-    "top-right"
-  );
-  // directions Ends
-
-  //   Line Start- >
-  map.addSource("demoLine", {
-    type: "geojson",
-    data: {
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [72.685546875, 19.145168196205297],
-          [74.091796875, 15.961329081596647],
-        ],
-      },
-    },
-  });
-  map.addLayer({
-    id: "outline",
-    type: "line",
-    source: "demoLine",
-    layout: {},
-    paint: {
-      "line-color": "#00F",
-      "line-width": 3,
-    },
-  });
-  // Line end
-
-  // live Location mark start
-
-  map.on("style.load", () => {
-    map.setFog({});
-  });
-
-  // map.on("load", async () => {
-  // Get the initial location of the International Space Station (ISS).
-  const geojson = await getLocation();
-  // Add the ISS location as a source.
-  map.addSource("iss", {
-    type: "geojson",
-    data: geojson,
-  });
-  // Add the rocket symbol layer to the map.
-  map.addLayer({
-    id: "iss",
-    type: "symbol",
-    source: "iss",
-    layout: {
-      // This icon is a part of the Mapbox Streets style.
-      // To view all images available in a Mapbox style, open
-      // the style in Mapbox Studio and click the "Images" tab.
-      // To add a new image to the style at runtime see
-      // https://docs.mapbox.com/mapbox-gl-js/example/add-image/
-      // "icon-image": "cat",
-      "icon-image": "rocket-15",
-    },
-  });
-
-  // Update the source from the API every 2 seconds.
-  const updateSource = setInterval(async () => {
-    const geojson = await getLocation(updateSource);
-    map.getSource("iss").setData(geojson);
-  }, 2000);
-
-  async function getLocation(updateSource) {
-    // const response = await fetch(
-    //   "https://api.wheretheiss.at/v1/satellites/25544",
-    //   { method: "GET" }
-    // );
-    // "http://localhost:3040/map"
-    // const { latitude, longitude } = await response.json();
-    // console.log("live response", response);
-
-    // Make a GET request to the API and return the location of the ISS.
-    try {
-      const response = await fetch(
-        "https://api.wheretheiss.at/v1/satellites/25544",
-        { method: "GET" }
-      );
-      // const response = await fetch("http://localhost:3040/map", {
-      //   method: "GET",
-      // });
-      // const demoStore = await response.json();
-      // console.log("store", demoStore);
-
-      const { latitude, longitude } = await response.json();
-      console.log("lat long", latitude, longitude);
-
-      console.log("live response", response);
-
-      // Fly the map to the location.
-      map.flyTo({
-        center: [longitude, latitude],
-        speed: 0.5,
-      });
-      // Return the location of the ISS as GeoJSON.
-      return {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [longitude, latitude],
-            },
-          },
-        ],
-      };
-    } catch (err) {
-      // If the updateSource interval is defined, clear the interval to stop updating the source.
-      if (updateSource) clearInterval(updateSource);
-      throw new Error(err);
-    }
-  }
-  // });
-  // live location mark end
+  //   //   Geo Coder search start
+  //   // Add the control to the map.
+  //   map.addControl(
+  //     new MapboxGeocoder({
+  //       accessToken:
+  //         "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
+  //       mapboxgl: mapboxgl,
+  //     })
+  //   );
+  //   // Geo Coder search Ends
 
   // // Circle try
   //   map.on("load", () => {
@@ -400,41 +288,49 @@ async function getMapData(map: mapboxgl.Map) {
   styleView(map);
 
   //   //   Polygon Starts
-  //   map.addSource("MyPolygon", {
-  //     type: "geojson",
-  //     data: {
-  //       type: "FeatureCollection",
-  //       features: [
-  //         {
-  //           type: "Feature",
-  //           properties: {},
-  //           geometry: {
-  //             type: "Polygon",
-  //             coordinates: [
-  //               [
-  //                 [74.70703125, 20.46818922264095],
-  //                 [80.771484375, 20.46818922264095],
-  //                 [80.771484375, 24.5271348225978],
-  //                 [74.70703125, 24.5271348225978],
-  //                 [74.04931277036667, 19.266912177018096],
-  //                 [74.70703125, 20.46818922264095],
-  //               ],
-  //             ],
-  //           },
-  //         },
-  //       ],
-  //     },
-  //   });
-  //   map.addLayer({
-  //     id: "MyPolygon",
-  //     type: "fill",
-  //     source: "MyPolygon", // reference the data source
-  //     layout: {},
-  //     paint: {
-  //       "fill-color": "#0080FF", // blue color fill
-  //       "fill-opacity": 0.5,
-  //     },
-  //   });
+  let pointsData = [];
+  data.allMapDataPoints.map((ele) => {
+    let arrFormat = [ele.lat, ele.lon];
+    pointsData.push(arrFormat);
+  });
+  console.log("coordinates", pointsData);
+
+  map.addSource("MyPolygon", {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "Polygon",
+            coordinates: [
+              pointsData,
+              //   [
+              //     [73.70703125, 18.96818922264095],
+              //     [72.771484375, 16.46818922264095],
+              //     [72.771484375, 19.5271348225978],
+              //     [-73.70703125, 16.5271348225978],
+              //     // [74.04931277036667, 19.266912177018096],
+              //     [74.70703125, 20.46818922264095],
+              //   ],
+            ],
+          },
+        },
+      ],
+    },
+  });
+  map.addLayer({
+    id: "MyPolygon",
+    type: "fill",
+    source: "MyPolygon", // reference the data source
+    layout: {},
+    paint: {
+      "fill-color": "#0080FF", // blue color fill
+      "fill-opacity": 0.5,
+    },
+  });
   //   // Polygon Ends
 }
 
@@ -487,7 +383,7 @@ async function mapMarker(map: mapboxgl.Map) {
   //       mapboxgl: mapboxgl,
   //     })
   //   );
-  //   // Geo Coder Ends
+  //   // Geo Coder search Ends
 
   // Geo Polygon end
 
@@ -579,121 +475,52 @@ async function mapMarker(map: mapboxgl.Map) {
   //     });
   //   });
   //   //   Geocode End here
-
-  //   //   Polygon start
-
-  //   let pointsData = [];
-  //   data.allMapDataPoints.map((ele) => {
-  //     let arrFormat = [ele.lat, ele.lon];
-  //     pointsData.push(arrFormat);
-  //   });
-  //   console.log("coordinates", pointsData);
-
-  //   map.on("load", () => {
-  //     // Add a data source containing GeoJSON data.
-  //     map.addSource("single-point", {
-  //       type: "geojson",
-  //       data: {
-  //         type: "Feature",
-  //         geometry: {
-  //           type: "Polygon",
-  //           // These coordinates outline Maine.
-  //           coordinates: [pointsData],
-  //           // [
-  //           //   [-67.13734, 45.13745],
-  //           //   [-66.96466, 44.8097],
-  //           //   [-68.03252, 44.3252],
-  //           //   [-69.06, 43.98],
-  //           //   [-70.11617, 43.68405],
-  //           //   [-70.64573, 43.09008],
-  //           //   [-70.75102, 43.08003],
-  //           //   [-70.79761, 43.21973],
-  //           //   [-70.98176, 43.36789],
-  //           //   [-70.94416, 43.46633],
-  //           //   [-71.08482, 45.30524],
-  //           //   [-70.66002, 45.46022],
-  //           //   [-70.30495, 45.91479],
-  //           //   [-70.00014, 46.69317],
-  //           //   [-69.23708, 47.44777],
-  //           //   [-68.90478, 47.18479],
-  //           //   [-68.2343, 47.35462],
-  //           //   [-67.79035, 47.06624],
-  //           //   [-67.79141, 45.70258],
-  //           //   [-67.13734, 45.13745],
-  //           // ],
-  //           //   ],
-  //         },
-  //       },
-  //     });
-
-  //     // Add a new layer to visualize the polygon.
-  //     map.addLayer({
-  //       id: "point",
-  //       type: "fill",
-  //       source: "single-point", // reference the data source
-  //       layout: {},
-  //       paint: {
-  //         "fill-color": "#0080ff", // blue color fill
-  //         "fill-opacity": 0.5,
-  //       },
-  //     });
-  //     // Add a black outline around the polygon.
-  //     map.addLayer({
-  //       id: "outline",
-  //       type: "line",
-  //       source: "maine",
-  //       layout: {},
-  //       paint: {
-  //         "line-color": "#000",
-  //         "line-width": 3,
-  //       },
-  //     });
-  //   });
-  // Polygon Ends
 }
 
-async function getSpecificMapData(find) {
-  console.log("abc");
-  if (find != null) {
-    data.findMapData = data.mapData.filter((ele) => {
-      let city1 = find.toLocaleLowerCase();
-      let city2 = ele.city.toLocaleLowerCase();
-      console.log("data find ", city1, city2);
+//   async function getSpecificMapData(find) {
+//     console.log("abc");
+//     if (find != null) {
+//       data.findMapData = data.mapData.filter((ele) => {
+//         let city1 = find.toLocaleLowerCase();
+//         let city2 = ele.city.toLocaleLowerCase();
+//         console.log("data find ", city1, city2);
 
-      let name1 = find.toLocaleLowerCase();
-      let name2 = ele.name.toLocaleLowerCase();
+//         let name1 = find.toLocaleLowerCase();
+//         let name2 = ele.name.toLocaleLowerCase();
 
-      if (name2.includes(name1) || city2.includes(city1)) {
-        console.log("data Found - >", ele);
-        return ele;
-      }
-    });
-  }
-  if (find == "") {
-    data.findMapData = data.mapData;
-  }
+//         if (name2.includes(name1) || city2.includes(city1)) {
+//           console.log("data Found - >", ele);
+//           return ele;
+//         }
+//       });
+//     }
+//     if (find == "") {
+//       data.findMapData = data.mapData;
+//     }
+//   }
+
+async function uploadCsvFile(event) {
+  console.log("event", event);
+
+  let file = {
+    csv: event.target.files[0],
+  };
+
+  console.log("file", file);
+  let payload = {
+    csv: file,
+    // csv: event.target.files[0],
+  };
+  console.log("payload", payload);
+
+  // http://localhost:3040/map/upload
+  let response = await $fetch("http://localhost:3040/map/upload", {
+    method: "POST",
+    body: payload,
+  });
+
+  console.log("res", response);
 }
-
-// async function uploadCsvFile(event) {
-//   console.log("event", event);
-
-//   let file = {
-//     csv: event.target.files[0].name,
-//   };
-//   console.log("file", file);
-//   let payload = {
-//     csv: file,
-//     // csv: event.target.files[0],
-//   };
-
-//   // http://localhost:3040/map/upload
-//   let response = await $fetch("http://localhost:3040/map/upload", {
-//     method: "POST",
-//     body: file,
-//   });
-
-//   console.log("res", response);
-// }
 </script>
 <!-- <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
   <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->

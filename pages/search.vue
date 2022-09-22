@@ -84,12 +84,13 @@
 </template>
 
 <script setup lang="ts">
-// src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js "
-// https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js
 import VMap from "v-mapbox";
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import { MapboxDraw } from "@mapbox/mapbox-gl-geocoder";
+// import MapboxGeocoder from "@mapbox/mapbox-gl-directions";
+// import { MapboxDraw } from "@mapbox/mapbox-gl-geocoder";
+// src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js "
+// https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js
 
 // const mapView = reactive({
 //   displayMap: "",
@@ -221,6 +222,15 @@ async function getMapData(map: mapboxgl.Map) {
   data.mapData = await $fetch("http://localhost:3040/map");
   console.log("all data", data.mapData);
 
+  // // Add the control to the map.
+  // map.addControl(
+  //   new MapboxGeocoder({
+  //     accessToken:
+  //       "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
+  //     mapboxgl: mapboxgl,
+  //   })
+  // );
+
   data.findMapData = data.mapData;
   data.mapData.map((ele) => {
     let pointsData = {
@@ -234,17 +244,17 @@ async function getMapData(map: mapboxgl.Map) {
 
   console.log("MapData - ", data.mapData[0]);
 
-  //   Geo Coder search start
+  //   //   Geo Coder search start
 
-  // Add the control to the map.
-  map.addControl(
-    new MapboxGeocoder({
-      accessToken:
-        "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
-      mapboxgl: mapboxgl,
-    })
-  );
-  // Geo Coder search end
+  //   // Add the control to the map.
+  //   map.addControl(
+  //     new MapboxGeocoder({
+  //       accessToken:
+  //         "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
+  //       mapboxgl: mapboxgl,
+  //     })
+  //   );
+  //   // Geo Coder search end
 
   // // Circle try
   //   map.on("load", () => {
