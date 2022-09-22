@@ -1,5 +1,4 @@
 <template>
-  <!-- @loaded="onMapLoaded" -->
   <main class="w-screen h-screen">
     <head>
       <meta charset="utf-8" />
@@ -12,6 +11,7 @@
         rel="stylesheet"
       />
       <!-- <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->
+      <!-- GeoCoder CSS -->
       <link
         rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css"
@@ -23,6 +23,14 @@
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
         type="text/css"
       />
+      <!-- Mapbox Draw Tool -->
+      <link
+        rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.3.0/mapbox-gl-draw.css"
+        type="text/css"
+      />
+      <!--  -->
+      <!-- MapBox GL -->
       <link
         href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css"
         rel="stylesheet"
@@ -33,7 +41,7 @@
     <v-map class="w-full h-full" :options="state.map" @loaded="getMapData">
       <!-- @loaded="styleView" -->
       <!-- @click="styleView" -->
-      <select
+      <!-- <select
         class="zIndex"
         id="styles"
         @change="styleView"
@@ -48,32 +56,13 @@
         >
           {{ view.name }}
         </option>
-      </select>
-      <!-- <input
-          type="text"
-          class="mapboxgl-ctrl-geocoder--input zIndex1"
-          placeholder="Search for places in Berkeley"
-          aria-label="Search for places"
-        /> -->
-
-      <!-- <input
-          type="search"
-          class="zIndex1"
-          name="search"
-          v-model="data.findString"
-          placeholder="Search Location"
-          @keyup="getSpecificMapData(data.findString)"
-        /> -->
-      <!-- <div class="zIndex2">
-          <input type="file" @change="uploadCsvFile" />
-          <button>Submit</button>
-        </div> -->
+      </select> -->
     </v-map>
     <!-- Polygon draw calculate start -->
-    <div class="calculation-box">
-      <p>Click the map to draw a polygon.</p>
-      <div id="calculated-area"></div>
-    </div>
+    <!-- <div class="calculation-box">
+        <p>Click the map to draw a polygon.</p>
+        <div id="calculated-area"></div>
+      </div> -->
     <!-- polygon ends -->
   </main>
 </template>
@@ -83,13 +72,13 @@
 // https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js
 import VMap from "v-mapbox";
 import mapboxgl from "mapbox-gl";
+// var MapboxDirections = require("@mapbox/mapbox-gl-directions");
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import MapboxDirections from "@mapbox/mapbox-gl-geocoder";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+// import MapboxDirections from "@mapbox/mapbox-gl-directions";
+// import MapboxDirections from "@mapbox/mapbox-gl-directions";
+import MapboxDirection from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 // import { MapboxDraw } from "@mapbox/mapbox-gl-geocoder";
-
-// const mapView = reactive({
-//   displayMap: "",
-// });
 
 const data = reactive({
   mapData: [],
@@ -144,20 +133,15 @@ const state = reactive({
   } as mapboxgl.MapboxOptions,
 });
 
-async function styleView(map: mapboxgl.Map) {
-  console.log("model data ", data.layerData);
-  let layerId = data.layerData;
-  //   console.log("set- >", "mapbox://styles/mapbox/" + layerId);
-  //   state.map.style = "mapbox://styles/mapbox/" + layerId;
-  //   const options: any = document.getElementsByTagName("option");
-  //   console.log("options ", options);
-  //   let setMapStyle = "mapbox://styles/mapbox/" + layerId;
-  console.log("map", map);
-  //   data.temp1.setStyle("mapbox://styles/mapbox/" + layerId);
-  //   data.map1.setStyle("mapbox://styles/mapbox/" + layerId);
-
-  //       map.setStyle("mapbox://styles/mapbox/" + layerId);
-}
+// async function styleView(map: mapboxgl.Map) {
+//   console.log("model data ", data.layerData);
+//   let layerId = data.layerData;
+//   //   let setMapStyle = "mapbox://styles/mapbox/" + layerId;
+//   console.log("map", map);
+//   //   data.temp1.setStyle("mapbox://styles/mapbox/" + layerId);
+//   data.map1.setStyle("mapbox://styles/mapbox/" + layerId);
+//   //       map.setStyle("mapbox://styles/mapbox/" + layerId);
+// }
 
 // function onMapLoaded(map) {
 //   ///---------Open marker on perticular location--------------
@@ -212,9 +196,24 @@ async function getMapData(map: mapboxgl.Map) {
 
   console.log("MapData - ", data.mapData[0]);
 
+  // MapBox Draw Tool start
+  var Draw = new MapboxDraw();
+
+  // Map#addControl takes an optional second argument to set the position of the control.
+  // If no position is specified the control defaults to `top-right`. See the docs
+  // for more details: https://docs.mapbox.com/mapbox-gl-js/api/#map#addcontrol
+
+  // map.addControl(Draw, "top-left");
+
+  // map.on("load", function () {
+  //   // ALL YOUR APPLICATION CODE
+  // });
+
+  // Mapbax draw tool end
+
   // Geo Coder search start
   // Add the control to the map
-  mapboxgl.accessToken = state.map.accessToken;
+  //   mapboxgl.accessToken = state.map.accessToken;
   // map.addControl(
   //   new MapboxGeocoder({
   //     accessToken: mapboxgl.accessToken,
@@ -233,11 +232,11 @@ async function getMapData(map: mapboxgl.Map) {
 
   //   Directions starts
   map.addControl(
-    new MapboxDirections({
+    new MapboxDirection({
       accessToken:
         "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
     }),
-    "top-right"
+    "top-left"
   );
   // directions Ends
 
@@ -267,95 +266,6 @@ async function getMapData(map: mapboxgl.Map) {
     },
   });
   // Line end
-
-  // live Location mark start
-
-  map.on("style.load", () => {
-    map.setFog({});
-  });
-
-  // map.on("load", async () => {
-  // Get the initial location of the International Space Station (ISS).
-  const geojson = await getLocation();
-  // Add the ISS location as a source.
-  map.addSource("iss", {
-    type: "geojson",
-    data: geojson,
-  });
-  // Add the rocket symbol layer to the map.
-  map.addLayer({
-    id: "iss",
-    type: "symbol",
-    source: "iss",
-    layout: {
-      // This icon is a part of the Mapbox Streets style.
-      // To view all images available in a Mapbox style, open
-      // the style in Mapbox Studio and click the "Images" tab.
-      // To add a new image to the style at runtime see
-      // https://docs.mapbox.com/mapbox-gl-js/example/add-image/
-      // "icon-image": "cat",
-      "icon-image": "rocket-15",
-    },
-  });
-
-  // Update the source from the API every 2 seconds.
-  const updateSource = setInterval(async () => {
-    const geojson = await getLocation(updateSource);
-    map.getSource("iss").setData(geojson);
-  }, 2000);
-
-  async function getLocation(updateSource) {
-    // const response = await fetch(
-    //   "https://api.wheretheiss.at/v1/satellites/25544",
-    //   { method: "GET" }
-    // );
-    // "http://localhost:3040/map"
-    // const { latitude, longitude } = await response.json();
-    // console.log("live response", response);
-
-    // Make a GET request to the API and return the location of the ISS.
-    try {
-      const response = await fetch(
-        "https://api.wheretheiss.at/v1/satellites/25544",
-        { method: "GET" }
-      );
-      // const response = await fetch("http://localhost:3040/map", {
-      //   method: "GET",
-      // });
-      // const demoStore = await response.json();
-      // console.log("store", demoStore);
-
-      const { latitude, longitude } = await response.json();
-      console.log("lat long", latitude, longitude);
-
-      console.log("live response", response);
-
-      // Fly the map to the location.
-      map.flyTo({
-        center: [longitude, latitude],
-        speed: 0.5,
-      });
-      // Return the location of the ISS as GeoJSON.
-      return {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [longitude, latitude],
-            },
-          },
-        ],
-      };
-    } catch (err) {
-      // If the updateSource interval is defined, clear the interval to stop updating the source.
-      if (updateSource) clearInterval(updateSource);
-      throw new Error(err);
-    }
-  }
-  // });
-  // live location mark end
 
   // // Circle try
   //   map.on("load", () => {
@@ -397,7 +307,7 @@ async function getMapData(map: mapboxgl.Map) {
   //   });
 
   mapMarker(map);
-  styleView(map);
+  //   styleView(map);
 
   //   //   Polygon Starts
   //   map.addSource("MyPolygon", {
@@ -453,11 +363,6 @@ async function mapMarker(map: mapboxgl.Map) {
       //   .setLngLat([74.04931277036667, 19.266912177018096])
       .addTo(map);
   });
-  // let lat = e.lngLat.lat;
-  // let lon = e.lngLat.lng;
-  // let lat = data.lat;
-  // let lon = data.lon;
-  // console.log("lat lon - " + lat, lon);
 
   data.allMapDataPoints.map((ele) => {
     new mapboxgl.Marker({
@@ -468,14 +373,7 @@ async function mapMarker(map: mapboxgl.Map) {
       .setLngLat([ele.lat, ele.lon])
       //   .setLngLat([74.04931277036667, 19.266912177018096])
       .addTo(map);
-    // new mapboxgl.Popup()
-    //   .setLngLat([74.04931277036667, 19.266912177018096])
-    //   //   .setLngLat([data.lat, data.lon])
-    //   //   .setHTML("hello world")
-    //   .addTo(map);
   });
-  //   });
-
   //   [74.04931277036667, 19.266912177018096],
   //   //   Geo Coder search start
 
@@ -652,51 +550,31 @@ async function mapMarker(map: mapboxgl.Map) {
   // Polygon Ends
 }
 
-async function getSpecificMapData(find) {
-  console.log("abc");
-  if (find != null) {
-    data.findMapData = data.mapData.filter((ele) => {
-      let city1 = find.toLocaleLowerCase();
-      let city2 = ele.city.toLocaleLowerCase();
-      console.log("data find ", city1, city2);
+//  // Get Specific Mapdata from database
+// async function getSpecificMapData(find) {
+//   console.log("abc");
+//   if (find != null) {
+//     data.findMapData = data.mapData.filter((ele) => {
+//       let city1 = find.toLocaleLowerCase();
+//       let city2 = ele.city.toLocaleLowerCase();
+//       console.log("data find ", city1, city2);
 
-      let name1 = find.toLocaleLowerCase();
-      let name2 = ele.name.toLocaleLowerCase();
+//       let name1 = find.toLocaleLowerCase();
+//       let name2 = ele.name.toLocaleLowerCase();
 
-      if (name2.includes(name1) || city2.includes(city1)) {
-        console.log("data Found - >", ele);
-        return ele;
-      }
-    });
-  }
-  if (find == "") {
-    data.findMapData = data.mapData;
-  }
-}
-
-// async function uploadCsvFile(event) {
-//   console.log("event", event);
-
-//   let file = {
-//     csv: event.target.files[0].name,
-//   };
-//   console.log("file", file);
-//   let payload = {
-//     csv: file,
-//     // csv: event.target.files[0],
-//   };
-
-//   // http://localhost:3040/map/upload
-//   let response = await $fetch("http://localhost:3040/map/upload", {
-//     method: "POST",
-//     body: file,
-//   });
-
-//   console.log("res", response);
+//       if (name2.includes(name1) || city2.includes(city1)) {
+//         console.log("data Found - >", ele);
+//         return ele;
+//       }
+//     });
+//   }
+//   if (find == "") {
+//     data.findMapData = data.mapData;
+//   }
 // }
 </script>
 <!-- <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
-  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->
 
 <style>
 html,
@@ -722,13 +600,13 @@ body {
 .w-full {
   width: 100%;
 }
-.zIndex {
+/* .zIndex {
   position: absolute;
   left: 0px;
   top: 0px;
   z-index: 1;
-}
-.zIndex1 {
+} */
+/* .zIndex1 {
   position: relative;
   left: 300px;
   top: 0px;
@@ -739,5 +617,5 @@ body {
   left: 600px;
   top: 0px;
   z-index: 1;
-}
+} */
 </style>
