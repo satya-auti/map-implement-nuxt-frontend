@@ -17,8 +17,6 @@
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css"
         type="text/css"
       />
-
-      <!-- <script src="https://js.sentry-cdn.com/9c5feb5b248b49f79a585804c259febc.min.js" crossorigin="anonymous"></script> -->
     </head>
     <v-map class="w-full h-full" :options="state.map" @loaded="getMapData">
       <!-- @loaded="styleView" -->
@@ -38,47 +36,34 @@
         >
           {{ view.name }}
         </option>
-        <!-- <option name="view" id="satellite-v9" v-bind:value="satellite-v9" selected>
-          <label>satellite</label>
-        </option>
-        <option name="view" id="light-v10" value="light-v10">
-          <label>light</label>
-        </option>
-        <option name="view" id="dark-v10" value="dark-v10">
-          <label>Dark</label>
-        </option>
-        <option name="view" id="streets-v11" value="streets-v11">
-          <label>Streets</label>
-        </option>
-        <option name="view" id="outdoors-v11" value="outdoors-v11">
-          <label>Outdoors</label>
-        </option> -->
       </select>
-
       <!-- <div class="zIndex2">
-        <input type="file" @change="uploadCsvFile" />
-        <button>Submit</button>
-      </div> -->
+          <input type="file" @change="uploadCsvFile" />
+          <button>Submit</button>
+        </div> -->
     </v-map>
+    <!-- Polygon draw calculate start -->
+    <!-- <div class="calculation-box">
+        <p>Click the map to draw a polygon.</p>
+        <div id="calculated-area"></div>
+      </div> -->
+    <!-- polygon ends -->
   </main>
 </template>
 
 <script setup lang="ts">
-// src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js "
-// https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js
 import VMap from "v-mapbox";
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 // import { MapboxDraw } from "@mapbox/mapbox-gl-geocoder";
 
-// const mapView = reactive({
-//   displayMap: "",
-// });
-
 const data = reactive({
   mapData: [],
+  polygonData: [],
   allMapDataPoints: [],
   findMapData: [],
+  allPolygonDataPoints: [],
+  findPolygonData: [],
   mark: [],
   lat: 0,
   lon: 0,
@@ -141,24 +126,7 @@ async function styleView(map: mapboxgl.Map) {
   data.map1.setStyle("mapbox://styles/mapbox/" + layerId);
   //   state.map.style = setMapStyle;
 
-  //   const layerList = document.getElementById("styles");
-  //   console.log("layer list ", layerList);
-
-  //   const options: any = layerList.getElementsByTagName("option");
-  //   console.log("options ", options);
-  //   //   options.forEach((a) => console.log("map - > ", a));
-  //   for (const option of options) {
-  //     console.log("in for loop" + option);
-  //     console.log("demo - > ", option.value);
-
-  //     option.onclick = (layer) => {
-  //       console.log("click on select" + layer);
-  //       console.log("id ", layer.value);
-
-  //       const layerId = layer.value;
   //       map.setStyle("mapbox://styles/mapbox/" + layerId);
-  //     };
-  //   }
 }
 
 // function onMapLoaded(map) {
@@ -193,12 +161,14 @@ async function styleView(map: mapboxgl.Map) {
 // }
 
 async function getMapData(map: mapboxgl.Map) {
+  let pt = [];
   console.log("load ", map);
   data.map1 = map;
 
   //   map.setStyle("mapbox://styles/mapbox/dark-v10");
   // http://localhost:3030/map
   //   http://localhost:3040/map
+  //   Getting Map Data
   data.mapData = await $fetch("http://localhost:3040/map");
   console.log("all data", data.mapData);
 
@@ -214,6 +184,49 @@ async function getMapData(map: mapboxgl.Map) {
   console.log("only points ", data.allMapDataPoints);
 
   console.log("MapData - ", data.mapData[0]);
+
+  //   polygon Data
+  data.polygonData = await $fetch("http://localhost:3040/polygon");
+  //   temp1[0].geom.coordinates[0]
+  console.log("all polygon data", data.polygonData);
+
+  let pointsPolygonData = [];
+  let copoint = [];
+  data.polygonData.map((ele) => {
+    // console.log("poly demo coordinates- ", ele.geom.cooridinates);
+    // console.log("poly demo - ", ele);
+    console.log("poly demo geom- ", ele.geom);
+    pointsPolygonData.push(ele.geom.coordinates);
+    ele.geom.coordinates.map((points) => {
+      console.log("Geom coordinates", points);
+      copoint.push(points);
+      points.map((co) => {
+        console.log("co point ", co);
+        // copoint.push(co);
+        co.map((a) => {
+          console.log("a", a);
+          //    copoint = a;
+          //   copoint.push(a);
+        });
+      });
+
+      //   data.allPolygonDataPoints.push(pointsPolygonData);
+    });
+    // pointsPolygonData.push(copoint);
+    // console.log("Polygon Data-->", copoint);
+    // console.log("Polygon Data-->", pointsPolygonData);
+    // data.allPolygonDataPoints.push(pointsPolygonData);
+    // let pointsPolygonData = {
+    //   lat: ele.lat,
+    //   lon: ele.lon,
+    // };
+    // data.allPolygonDataPoints.push(pointsPolygonData);
+  });
+  console.log("Polygon Data-->", copoint[0]);
+  //   pointsPolygonData.push(copoint[0]);
+  console.log("Polygon Data1-->", pointsPolygonData);
+  //   data.allPolygonDataPoints.push(pointsPolygonData);
+  //   console.log("only Polygon points ", data.allPolygonDataPoints);
 
   //   Geo Coder search start
   // Add the control to the map.
@@ -270,11 +283,58 @@ async function getMapData(map: mapboxgl.Map) {
 
   //   //   Polygon Starts
   let pointsData = [];
-  data.allMapDataPoints.map((ele) => {
-    let arrFormat = [ele.lat, ele.lon];
-    pointsData.push(arrFormat);
+  copoint.map((ele) => {
+    console.log("poly poly", ele);
+    ele.map((poi) => {
+      //   let arrFormat = [poi];
+      pointsData.push(poi);
+    });
+    // let arrFormat = [ele[0]];
+    // // let arrFormat = [ele[0], ele[1]];
+
+    // pointsData.push(arrFormat);
   });
+
+  let pt2 = [];
   console.log("coordinates", pointsData);
+  pointsData.map((ele1) => {
+    console.log("f", ele1);
+    pt2 = [ele1[0], ele1[1]];
+    pt.push(pt2);
+  });
+  console.log("pt", pt);
+
+  data.allPolygonDataPoints = pt;
+  console.log("do", data.allPolygonDataPoints);
+
+  //   let pointsData = [];
+  //   data.allMapDataPoints.map((ele) => {
+  //     let arrFormat = [ele.lat, ele.lon];
+  //     pointsData.push(arrFormat);
+  //   });
+  //   console.log("coordinates", pointsData);
+
+  //   polygon point
+  let polly = [];
+  pt.map((ele) => {
+    polly.push(ele);
+  });
+  console.log("polly", polly);
+
+  pt.map((ele) => {
+    console.log("elele", ele);
+
+    new mapboxgl.Marker({
+      draggable: true,
+      color: "#" + (Math.random().toString(16) + "000000").substring(2, 8),
+    })
+      //   .setLngLat([e.lngLat.lng, e.lngLat.lat])
+      // .setLngLat([ele.lat, ele.lon])
+      .setLngLat(ele)
+      //   .setLngLat([74.04931277036667, 19.266912177018096])
+      .addTo(map);
+  });
+  //
 
   map.addSource("MyPolygon", {
     type: "geojson",
@@ -287,14 +347,26 @@ async function getMapData(map: mapboxgl.Map) {
           geometry: {
             type: "Polygon",
             coordinates: [
-              pointsData,
+              //   pointsData,
+              polly,
+              //   pointsData[0],
+              //   copoint[0],
+              //   pointsPolygonData,
+              //   ('POLYGON((73.6373 18.0750,73.6374 18.0750,73.6374 18.0749,73.63 18.07491,73.6373 18.0750))
               //   [
-              //     [73.70703125, 18.96818922264095],
-              //     [72.771484375, 16.46818922264095],
-              //     [72.771484375, 19.5271348225978],
-              //     [-73.70703125, 16.5271348225978],
-              //     // [74.04931277036667, 19.266912177018096],
-              //     [74.70703125, 20.46818922264095],
+              //     //     [73.70703125, 18.96818922264095],
+              //     //     [72.771484375, 16.46818922264095],
+              //     //     [72.771484375, 19.5271348225978],
+              //     //     [-73.70703125, 16.5271348225978],
+              //     //     // [74.04931277036667, 19.266912177018096],
+              //     //     [74.70703125, 20.46818922264095],
+
+              //     //
+              //     [73.6373, 18.075],
+              //     [74.6374, 19.075],
+              //     [72.6374, 17.0749],
+              //     [73.93, 17.07491],
+              //     [73.6373, 18.075],
               //   ],
             ],
           },
@@ -322,8 +394,9 @@ async function getMapData(map: mapboxgl.Map) {
 }
 
 async function mapMarker(map: mapboxgl.Map) {
+  console.log("elele");
   data.map1 = map;
-
+  let pt = [];
   map.on("click", (e) => {
     console.log("clicked ", e);
 
@@ -336,13 +409,10 @@ async function mapMarker(map: mapboxgl.Map) {
       //   .setLngLat([74.04931277036667, 19.266912177018096])
       .addTo(map);
   });
-  // let lat = e.lngLat.lat;
-  // let lon = e.lngLat.lng;
-  // let lat = data.lat;
-  // let lon = data.lon;
-  // console.log("lat lon - " + lat, lon);
 
   data.allMapDataPoints.map((ele) => {
+    console.log("back");
+
     new mapboxgl.Marker({
       draggable: true,
       color: "#" + (Math.random().toString(16) + "000000").substring(2, 8),
@@ -357,6 +427,21 @@ async function mapMarker(map: mapboxgl.Map) {
     //   //   .setHTML("hello world")
     //   .addTo(map);
   });
+
+  //   //   polygon point
+  //   pt.map((ele) => {
+  //     console.log("elele", ele);
+
+  //     new mapboxgl.Marker({
+  //       draggable: true,
+  //       color: "#" + (Math.random().toString(16) + "000000").substring(2, 8),
+  //     })
+  //       //   .setLngLat([e.lngLat.lng, e.lngLat.lat])
+  //       // .setLngLat([ele.lat, ele.lon])
+  //       //   .setLngLat([ele])
+  //       .setLngLat([74.04931277036667, 19.266912177018096])
+  //       .addTo(map);
+  //   });
   //   });
 
   //   [74.04931277036667, 19.266912177018096],
@@ -534,52 +619,7 @@ async function mapMarker(map: mapboxgl.Map) {
   //   });
   // Polygon Ends
 }
-
-async function getSpecificMapData(find) {
-  console.log("abc");
-  if (find != null) {
-    data.findMapData = data.mapData.filter((ele) => {
-      let city1 = find.toLocaleLowerCase();
-      let city2 = ele.city.toLocaleLowerCase();
-      console.log("data find ", city1, city2);
-
-      let name1 = find.toLocaleLowerCase();
-      let name2 = ele.name.toLocaleLowerCase();
-
-      if (name2.includes(name1) || city2.includes(city1)) {
-        console.log("data Found - >", ele);
-        return ele;
-      }
-    });
-  }
-  if (find == "") {
-    data.findMapData = data.mapData;
-  }
-}
-
-// async function uploadCsvFile(event) {
-//   console.log("event", event);
-
-//   let file = {
-//     csv: event.target.files[0].name,
-//   };
-//   console.log("file", file);
-//   let payload = {
-//     csv: file,
-//     // csv: event.target.files[0],
-//   };
-
-//   // http://localhost:3040/map/upload
-//   let response = await $fetch("http://localhost:3040/map/upload", {
-//     method: "POST",
-//     body: file,
-//   });
-
-//   console.log("res", response);
-// }
 </script>
-<!-- <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->
 
 <style>
 html,

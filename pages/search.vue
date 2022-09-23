@@ -87,14 +87,6 @@
 import VMap from "v-mapbox";
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-// import MapboxGeocoder from "@mapbox/mapbox-gl-directions";
-// import { MapboxDraw } from "@mapbox/mapbox-gl-geocoder";
-// src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js "
-// https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js
-
-// const mapView = reactive({
-//   displayMap: "",
-// });
 
 const data = reactive({
   mapData: [],

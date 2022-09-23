@@ -38,39 +38,13 @@
         >
           {{ view.name }}
         </option>
-        <!-- <option name="view" id="satellite-v9" v-bind:value="satellite-v9" selected>
-            <label>satellite</label>
-          </option>
-          <option name="view" id="light-v10" value="light-v10">
-            <label>light</label>
-          </option>
-          <option name="view" id="dark-v10" value="dark-v10">
-            <label>Dark</label>
-          </option>
-          <option name="view" id="streets-v11" value="streets-v11">
-            <label>Streets</label>
-          </option>
-          <option name="view" id="outdoors-v11" value="outdoors-v11">
-            <label>Outdoors</label>
-          </option> -->
       </select>
-      <!-- <input
-          type="text"
-          class="mapboxgl-ctrl-geocoder--input zIndex1"
-          placeholder="Search for places in Berkeley"
-          aria-label="Search for places"
-        /> -->
 
-      <!-- <input
-          type="search"
-          class="zIndex1"
-          name="search"
-          v-model="data.findString"
-          placeholder="Search Location"
-          @keyup="getSpecificMapData(data.findString)"
-        /> -->
       <div class="zIndex2">
-        <input type="file" @change="uploadCsvFile" />
+        <!-- fileData -->
+        <!-- v-bind="fileData" -->
+        <input type="file" id="fileData" @change="uploadCsvFile" />
+        <!-- <input type="file" v-bind="data.fileData" @change="uploadCsvFile" /> -->
         <button>Submit</button>
       </div>
     </v-map>
@@ -106,8 +80,9 @@ const data = reactive({
   temp1: {},
   map1: {},
   findString: "",
+  fileData: "",
 });
-
+let fileData: any;
 const layerValues = reactive({
   options: [
     {
@@ -151,34 +126,12 @@ const state = reactive({
 async function styleView(map: mapboxgl.Map) {
   console.log("model data ", data.layerData);
   let layerId = data.layerData;
-  //   console.log("set- >", "mapbox://styles/mapbox/" + layerId);
-  //   state.map.style = "mapbox://styles/mapbox/" + layerId;
-  //   const options: any = document.getElementsByTagName("option");
-  //   console.log("options ", options);
-  //   let setMapStyle = "mapbox://styles/mapbox/" + layerId;
+
   console.log("map", map);
   //   data.temp1.setStyle("mapbox://styles/mapbox/" + layerId);
   data.map1.setStyle("mapbox://styles/mapbox/" + layerId);
-  //   state.map.style = setMapStyle;
 
-  //   const layerList = document.getElementById("styles");
-  //   console.log("layer list ", layerList);
-
-  //   const options: any = layerList.getElementsByTagName("option");
-  //   console.log("options ", options);
-  //   //   options.forEach((a) => console.log("map - > ", a));
-  //   for (const option of options) {
-  //     console.log("in for loop" + option);
-  //     console.log("demo - > ", option.value);
-
-  //     option.onclick = (layer) => {
-  //       console.log("click on select" + layer);
-  //       console.log("id ", layer.value);
-
-  //       const layerId = layer.value;
   //       map.setStyle("mapbox://styles/mapbox/" + layerId);
-  //     };
-  //   }
 }
 
 // function onMapLoaded(map) {
@@ -234,55 +187,16 @@ async function getMapData(map: mapboxgl.Map) {
 
   console.log("MapData - ", data.mapData[0]);
 
-  //   //   Geo Coder search start
-  //   // Add the control to the map.
-  //   map.addControl(
-  //     new MapboxGeocoder({
-  //       accessToken:
-  //         "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
-  //       mapboxgl: mapboxgl,
-  //     })
-  //   );
-  //   // Geo Coder search Ends
-
-  // // Circle try
-  //   map.on("load", () => {
-  //     // Add the vector tileset as a source.
-  //     map.addSource("ethnicity", {
-  //       type: "vector",
-  //       url: "mapbox://examples.8fgz4egr",
-  //     });
-  //     map.addLayer({
-  //       id: "population",
-  //       type: "circle",
-  //       source: "ethnicity",
-  //       "source-layer": "sf2010",
-  //       paint: {
-  //         // Make circles larger as the user zooms from z12 to z22.
-  //         "circle-radius": {
-  //           base: 1.75,
-  //           stops: [
-  //             [12, 2],
-  //             [22, 180],
-  //           ],
-  //         },
-  //         // Color circles by ethnicity, using a `match` expression.
-  //         "circle-color": [
-  //           "match",
-  //           ["get", "ethnicity"],
-  //           "White",
-  //           "#fbb03b",
-  //           "Black",
-  //           "#223b53",
-  //           "Hispanic",
-  //           "#e55e5e",
-  //           "Asian",
-  //           "#3bb2d0",
-  //           /* other */ "#ccc",
-  //         ],
-  //       },
-  //     });
-  //   });
+  // //   Geo Coder search start
+  // // Add the control to the map.
+  // map.addControl(
+  //   new MapboxGeocoder({
+  //     accessToken:
+  //       "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
+  //     mapboxgl: mapboxgl,
+  //   })
+  // );
+  // // Geo Coder search Ends
 
   mapMarker(map);
   styleView(map);
@@ -349,11 +263,6 @@ async function mapMarker(map: mapboxgl.Map) {
       //   .setLngLat([74.04931277036667, 19.266912177018096])
       .addTo(map);
   });
-  // let lat = e.lngLat.lat;
-  // let lon = e.lngLat.lng;
-  // let lat = data.lat;
-  // let lon = data.lon;
-  // console.log("lat lon - " + lat, lon);
 
   data.allMapDataPoints.map((ele) => {
     new mapboxgl.Marker({
@@ -370,160 +279,31 @@ async function mapMarker(map: mapboxgl.Map) {
     //   //   .setHTML("hello world")
     //   .addTo(map);
   });
-  //   });
-
   //   [74.04931277036667, 19.266912177018096],
-  //   //   Geo Coder search start
-
-  //   // Add the control to the map.
-  //   map.addControl(
-  //     new MapboxGeocoder({
-  //       accessToken:
-  //         "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
-  //       mapboxgl: mapboxgl,
-  //     })
-  //   );
-  //   // Geo Coder search Ends
-
-  // Geo Polygon end
-
-  //   Draw Polygon code
-  //   const draw = new MapboxDraw({
-  //     displayControlsDefault: false,
-  //     // Select which mapbox-gl-draw control buttons to add to the map.
-  //     controls: {
-  //       polygon: true,
-  //       trash: true,
-  //     },
-  //     // Set mapbox-gl-draw to draw by default.
-  //     // The user does not have to click the polygon control button first.
-  //     defaultMode: "draw_polygon",
-  //   });
-  //   map.addControl(draw);
-
-  //   map.on("draw.create", updateArea);
-  //   map.on("draw.delete", updateArea);
-  //   map.on("draw.update", updateArea);
-
-  //   function updateArea(e) {
-  //     const data = draw.getAll();
-  //     const answer = document.getElementById("calculated-area");
-  //     if (data.features.length > 0) {
-  //       const area = turf.area(data);
-  //       // Restrict the area to 2 decimal points.
-  //       const rounded_area = Math.round(area * 100) / 100;
-  //       answer.innerHTML = `<p><strong>${rounded_area}</strong></p><p>square meters</p>`;
-  //     } else {
-  //       answer.innerHTML = "";
-  //       if (e.type !== "draw.delete") alert("Click the map to draw a polygon.");
-  //     }
-  //   }
-  //   // Geo Draw Polygon ends
-
-  //   //   Search by GeoCoderr
-  //   const marker = new mapboxgl.Marker() // Initialize a new marker
-  //     // .setLngLat([-122.25948, 37.87221]) // Marker [lng, lat] coordinates
-  //     .setLngLat([73.816931277036667, 18.556912177018096])
-  //     .addTo(map); // Add the marker to the map
-
-  //   const geocoder = new MapboxGeocoder({
-  //     // Initialize the geocoder
-  //     accessToken:
-  //       "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw", // Set the access token
-  //     mapboxgl: mapboxgl, // Set the mapbox-gl instance
-  //     marker: false, // Do not use the default marker style
-  //     placeholder: "Search for places", // Placeholder text for the search bar
-  //     // bbox: [-122.30937, 37.84214, -122.23715, 37.89838], // Boundary
-  //     bbox: [74.0493127, 19.1669121, 74.2493127, 19.2269121], // Boundary for Berkeley
-  //     proximity: {
-  //       //   longitude: -122.25948,
-  //       //   latitude: 37.87221,
-
-  //       longitude: 74.14931277036667,
-  //       latitude: 19.266912177018096,
-  //     }, // Coordinates of UC Berkeley
-  //   });
-
-  //   // Add the geocoder to the map
-  //   map.addControl(geocoder);
-
-  //   // After the map style has loaded on the page,
-  //   // add a source layer and default styling for a single point
-  //   map.on("load", () => {
-  //     map.addSource("single-point", {
-  //       type: "geojson",
-  //       data: {
-  //         type: "FeatureCollection",
-  //         features: [],
-  //       },
-  //     });
-
-  //     map.addLayer({
-  //       id: "point",
-  //       source: "single-point",
-  //       type: "circle",
-  //       paint: {
-  //         "circle-radius": 10,
-  //         "circle-color": "#448ee4",
-  //       },
-  //     });
-
-  //     // Listen for the `result` event from the Geocoder // `result` event is triggered when a user makes a selection
-  //     //  Add a marker at the result's coordinates
-  //     geocoder.on("result", (event) => {
-  //       map.getSource("single-point").setData(event.result.geometry);
-  //     });
-  //   });
-  //   //   Geocode End here
 }
-
-//   async function getSpecificMapData(find) {
-//     console.log("abc");
-//     if (find != null) {
-//       data.findMapData = data.mapData.filter((ele) => {
-//         let city1 = find.toLocaleLowerCase();
-//         let city2 = ele.city.toLocaleLowerCase();
-//         console.log("data find ", city1, city2);
-
-//         let name1 = find.toLocaleLowerCase();
-//         let name2 = ele.name.toLocaleLowerCase();
-
-//         if (name2.includes(name1) || city2.includes(city1)) {
-//           console.log("data Found - >", ele);
-//           return ele;
-//         }
-//       });
-//     }
-//     if (find == "") {
-//       data.findMapData = data.mapData;
-//     }
-//   }
 
 async function uploadCsvFile(event) {
   console.log("event", event);
-
-  let file = {
-    csv: event.target.files[0],
-  };
-
+  let formData = new FormData();
+  //   let file = fileData as HTMLInputElement | null;
+  let file = document.getElementById("fileData") as HTMLInputElement | null;
+  //   {
+  //     csv: event.target.files[0],
+  //   };
+  formData.append("csv", file.files[0]);
   console.log("file", file);
-  let payload = {
-    csv: file,
-    // csv: event.target.files[0],
-  };
-  console.log("payload", payload);
+  //   console.log("file", file.files[0]);
 
   // http://localhost:3040/map/upload
   let response = await $fetch("http://localhost:3040/map/upload", {
     method: "POST",
-    body: payload,
+    // body: payload,
+    body: formData,
   });
 
   console.log("res", response);
 }
 </script>
-<!-- <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script>
-  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->
 
 <style>
 html,
