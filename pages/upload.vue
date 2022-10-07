@@ -65,10 +65,6 @@ import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 // import { MapboxDraw } from "@mapbox/mapbox-gl-geocoder";
 
-// const mapView = reactive({
-//   displayMap: "",
-// });
-
 const data = reactive({
   mapData: [],
   allMapDataPoints: [],
