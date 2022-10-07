@@ -7,28 +7,14 @@
       <meta name="robots" content="noindex, nofollow" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <!-- <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.js"></script> -->
-      <!-- mapbox gl css -->
       <link
         href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.9.2/mapbox-gl.css"
         rel="stylesheet"
       />
       <!-- <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script> -->
-      <!-- Mapbox Geocoder (search function) -->
       <link
         rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css"
-        type="text/css"
-      />
-      <!-- Mapbox Draw -->
-      <link
-        rel="stylesheet"
-        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.3.0/mapbox-gl-draw.css"
-        type="text/css"
-      />
-      <!-- Directions css -->
-      <link
-        rel="stylesheet"
-        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
         type="text/css"
       />
 
@@ -53,20 +39,20 @@
           {{ view.name }}
         </option>
         <!-- <option name="view" id="satellite-v9" v-bind:value="satellite-v9" selected>
-          <label>satellite</label>
-        </option>
-        <option name="view" id="light-v10" value="light-v10">
-          <label>light</label>
-        </option>
-        <option name="view" id="dark-v10" value="dark-v10">
-          <label>Dark</label>
-        </option>
-        <option name="view" id="streets-v11" value="streets-v11">
-          <label>Streets</label>
-        </option>
-        <option name="view" id="outdoors-v11" value="outdoors-v11">
-          <label>Outdoors</label>
-        </option> -->
+            <label>satellite</label>
+          </option>
+          <option name="view" id="light-v10" value="light-v10">
+            <label>light</label>
+          </option>
+          <option name="view" id="dark-v10" value="dark-v10">
+            <label>Dark</label>
+          </option>
+          <option name="view" id="streets-v11" value="streets-v11">
+            <label>Streets</label>
+          </option>
+          <option name="view" id="outdoors-v11" value="outdoors-v11">
+            <label>Outdoors</label>
+          </option> -->
       </select>
 
       <div class="zIndex2">
@@ -84,9 +70,11 @@
 import VMap from "v-mapbox";
 import mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import MapboxDirection from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions";
 // import { MapboxDraw } from "@mapbox/mapbox-gl-geocoder";
+
+// const mapView = reactive({
+//   displayMap: "",
+// });
 
 const data = reactive({
   mapData: [],
@@ -208,10 +196,10 @@ async function styleView(map: mapboxgl.Map) {
 async function getMapData(map: mapboxgl.Map) {
   console.log("load ", map);
   data.map1 = map;
+
   //   map.setStyle("mapbox://styles/mapbox/dark-v10");
   // http://localhost:3030/map
   //   http://localhost:3040/map
-
   data.mapData = await $fetch("http://localhost:3040/map");
   console.log("all data", data.mapData);
 
@@ -253,25 +241,44 @@ async function getMapData(map: mapboxgl.Map) {
   );
   // Live locater end
 
-  // MapBox Draw Tool start
-  var Draw = new MapboxDraw();
-
-  // Map#addControl takes an optional second argument to set the position of the control.
-  // If no position is specified the control defaults to `top-right`. See the docs
-  // for more details: https://docs.mapbox.com/mapbox-gl-js/api/#map#addcontrol
-
-  map.addControl(Draw, "top-right");
-  // MapBox Draw Tool end
-
-  //   Directions starts
-  map.addControl(
-    new MapboxDirection({
-      accessToken:
-        "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw",
-    }),
-    "bottom-left"
-  );
-  // directions Ends
+  // // Circle try
+  //   map.on("load", () => {
+  //     // Add the vector tileset as a source.
+  //     map.addSource("ethnicity", {
+  //       type: "vector",
+  //       url: "mapbox://examples.8fgz4egr",
+  //     });
+  //     map.addLayer({
+  //       id: "population",
+  //       type: "circle",
+  //       source: "ethnicity",
+  //       "source-layer": "sf2010",
+  //       paint: {
+  //         // Make circles larger as the user zooms from z12 to z22.
+  //         "circle-radius": {
+  //           base: 1.75,
+  //           stops: [
+  //             [12, 2],
+  //             [22, 180],
+  //           ],
+  //         },
+  //         // Color circles by ethnicity, using a `match` expression.
+  //         "circle-color": [
+  //           "match",
+  //           ["get", "ethnicity"],
+  //           "White",
+  //           "#fbb03b",
+  //           "Black",
+  //           "#223b53",
+  //           "Hispanic",
+  //           "#e55e5e",
+  //           "Asian",
+  //           "#3bb2d0",
+  //           /* other */ "#ccc",
+  //         ],
+  //       },
+  //     });
+  //   });
 
   mapMarker(map);
   styleView(map);
@@ -366,7 +373,170 @@ async function mapMarker(map: mapboxgl.Map) {
     //   .addTo(map);
   });
   //   });
+
   //   [74.04931277036667, 19.266912177018096],
+
+  // Geo Polygon end
+
+  //   Draw Polygon code
+  //   const draw = new MapboxDraw({
+  //     displayControlsDefault: false,
+  //     // Select which mapbox-gl-draw control buttons to add to the map.
+  //     controls: {
+  //       polygon: true,
+  //       trash: true,
+  //     },
+  //     // Set mapbox-gl-draw to draw by default.
+  //     // The user does not have to click the polygon control button first.
+  //     defaultMode: "draw_polygon",
+  //   });
+  //   map.addControl(draw);
+
+  //   map.on("draw.create", updateArea);
+  //   map.on("draw.delete", updateArea);
+  //   map.on("draw.update", updateArea);
+
+  //   function updateArea(e) {
+  //     const data = draw.getAll();
+  //     const answer = document.getElementById("calculated-area");
+  //     if (data.features.length > 0) {
+  //       const area = turf.area(data);
+  //       // Restrict the area to 2 decimal points.
+  //       const rounded_area = Math.round(area * 100) / 100;
+  //       answer.innerHTML = `<p><strong>${rounded_area}</strong></p><p>square meters</p>`;
+  //     } else {
+  //       answer.innerHTML = "";
+  //       if (e.type !== "draw.delete") alert("Click the map to draw a polygon.");
+  //     }
+  //   }
+  //   // Geo Draw Polygon ends
+
+  //   //   Search by GeoCoderr
+  //   const marker = new mapboxgl.Marker() // Initialize a new marker
+  //     // .setLngLat([-122.25948, 37.87221]) // Marker [lng, lat] coordinates
+  //     .setLngLat([73.816931277036667, 18.556912177018096])
+  //     .addTo(map); // Add the marker to the map
+
+  //   const geocoder = new MapboxGeocoder({
+  //     // Initialize the geocoder
+  //     accessToken:
+  //       "pk.eyJ1Ijoic2F0eWEtYXV0aSIsImEiOiJjbDdwdnFqMWIwMWF3M3BxZ3dvaTZlNW5yIn0.wrAe-_808WZm-CBKVTwfIw", // Set the access token
+  //     mapboxgl: mapboxgl, // Set the mapbox-gl instance
+  //     marker: false, // Do not use the default marker style
+  //     placeholder: "Search for places", // Placeholder text for the search bar
+  //     // bbox: [-122.30937, 37.84214, -122.23715, 37.89838], // Boundary
+  //     bbox: [74.0493127, 19.1669121, 74.2493127, 19.2269121], // Boundary for Berkeley
+  //     proximity: {
+  //       //   longitude: -122.25948,
+  //       //   latitude: 37.87221,
+
+  //       longitude: 74.14931277036667,
+  //       latitude: 19.266912177018096,
+  //     }, // Coordinates of UC Berkeley
+  //   });
+
+  //   // Add the geocoder to the map
+  //   map.addControl(geocoder);
+
+  //   // After the map style has loaded on the page,
+  //   // add a source layer and default styling for a single point
+  //   map.on("load", () => {
+  //     map.addSource("single-point", {
+  //       type: "geojson",
+  //       data: {
+  //         type: "FeatureCollection",
+  //         features: [],
+  //       },
+  //     });
+
+  //     map.addLayer({
+  //       id: "point",
+  //       source: "single-point",
+  //       type: "circle",
+  //       paint: {
+  //         "circle-radius": 10,
+  //         "circle-color": "#448ee4",
+  //       },
+  //     });
+
+  //     // Listen for the `result` event from the Geocoder // `result` event is triggered when a user makes a selection
+  //     //  Add a marker at the result's coordinates
+  //     geocoder.on("result", (event) => {
+  //       map.getSource("single-point").setData(event.result.geometry);
+  //     });
+  //   });
+  //   //   Geocode End here
+
+  //   //   Polygon start
+
+  //   let pointsData = [];
+  //   data.allMapDataPoints.map((ele) => {
+  //     let arrFormat = [ele.lat, ele.lon];
+  //     pointsData.push(arrFormat);
+  //   });
+  //   console.log("coordinates", pointsData);
+
+  //   map.on("load", () => {
+  //     // Add a data source containing GeoJSON data.
+  //     map.addSource("single-point", {
+  //       type: "geojson",
+  //       data: {
+  //         type: "Feature",
+  //         geometry: {
+  //           type: "Polygon",
+  //           // These coordinates outline Maine.
+  //           coordinates: [pointsData],
+  //           // [
+  //           //   [-67.13734, 45.13745],
+  //           //   [-66.96466, 44.8097],
+  //           //   [-68.03252, 44.3252],
+  //           //   [-69.06, 43.98],
+  //           //   [-70.11617, 43.68405],
+  //           //   [-70.64573, 43.09008],
+  //           //   [-70.75102, 43.08003],
+  //           //   [-70.79761, 43.21973],
+  //           //   [-70.98176, 43.36789],
+  //           //   [-70.94416, 43.46633],
+  //           //   [-71.08482, 45.30524],
+  //           //   [-70.66002, 45.46022],
+  //           //   [-70.30495, 45.91479],
+  //           //   [-70.00014, 46.69317],
+  //           //   [-69.23708, 47.44777],
+  //           //   [-68.90478, 47.18479],
+  //           //   [-68.2343, 47.35462],
+  //           //   [-67.79035, 47.06624],
+  //           //   [-67.79141, 45.70258],
+  //           //   [-67.13734, 45.13745],
+  //           // ],
+  //           //   ],
+  //         },
+  //       },
+  //     });
+
+  //     // Add a new layer to visualize the polygon.
+  //     map.addLayer({
+  //       id: "point",
+  //       type: "fill",
+  //       source: "single-point", // reference the data source
+  //       layout: {},
+  //       paint: {
+  //         "fill-color": "#0080ff", // blue color fill
+  //         "fill-opacity": 0.5,
+  //       },
+  //     });
+  //     // Add a black outline around the polygon.
+  //     map.addLayer({
+  //       id: "outline",
+  //       type: "line",
+  //       source: "maine",
+  //       layout: {},
+  //       paint: {
+  //         "line-color": "#000",
+  //         "line-width": 3,
+  //       },
+  //     });
+  //   });
+  // Polygon Ends
 }
 
 async function uploadCsvFile(event) {

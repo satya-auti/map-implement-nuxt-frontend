@@ -49,12 +49,6 @@
           {{ view.name }}
         </option>
       </select>
-      <!-- <input
-          type="text"
-          class="mapboxgl-ctrl-geocoder--input zIndex1"
-          placeholder="Search for places in Berkeley"
-          aria-label="Search for places"
-        /> -->
 
       <!-- <input
           type="search"
@@ -155,7 +149,6 @@ async function styleView(map: mapboxgl.Map) {
   console.log("map", map);
   //   data.temp1.setStyle("mapbox://styles/mapbox/" + layerId);
   //   data.map1.setStyle("mapbox://styles/mapbox/" + layerId);
-
   //       map.setStyle("mapbox://styles/mapbox/" + layerId);
 }
 
@@ -460,6 +453,8 @@ async function mapMarker(map: mapboxgl.Map) {
   // console.log("lat lon - " + lat, lon);
 
   data.allMapDataPoints.map((ele) => {
+    console.log("ele123", ele);
+
     new mapboxgl.Marker({
       draggable: true,
       color: "#" + (Math.random().toString(16) + "000000").substring(2, 8),
@@ -468,12 +463,21 @@ async function mapMarker(map: mapboxgl.Map) {
       .setLngLat([ele.lat, ele.lon])
       //   .setLngLat([74.04931277036667, 19.266912177018096])
       .addTo(map);
+    map.on("mouseover", (e) => {
+      new mapboxgl.Popup()
+        .setLngLat([ele.lat, ele.lon])
+        //   //   .setLngLat([data.lat, data.lon])
+        .setHTML("values" + ele.lat + " , " + ele.lon)
+        .addTo(map);
+    });
+
     // new mapboxgl.Popup()
     //   .setLngLat([74.04931277036667, 19.266912177018096])
     //   //   .setLngLat([data.lat, data.lon])
     //   //   .setHTML("hello world")
     //   .addTo(map);
   });
+  map.on("mouseout", (e) => {});
   //   });
 
   //   [74.04931277036667, 19.266912177018096],
